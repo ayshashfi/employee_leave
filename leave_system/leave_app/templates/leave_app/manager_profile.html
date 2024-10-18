@@ -1,0 +1,40 @@
+<!-- manager_profile.html -->
+{% extends 'leave_app/base.html' %}
+
+{% block title %}{{ manager.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">{{ manager.username }}'s Profile</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-4 text-center">
+            {% if manager.profile.profile_picture %}
+                <img src="{{ manager.profile.profile_picture.url }}" alt="{{ manager.username }}'s Profile Picture" class="img-fluid rounded-circle border border-secondary mb-3" style="width: 150px; height: 150px;">
+            {% else %}
+                <p>No Profile Picture Available</p>  <!-- Message if there's no profile picture -->
+            {% endif %}
+            <h5>{{ manager.username }}</h5>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card border-light shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Manager Details</h5>
+                    <p><strong>First Name:</strong> {{ manager.first_name }}</p>
+                    <p><strong>Last Name:</strong> {{ manager.last_name }}</p>
+                    <p><strong>Email:</strong> {{ manager.email }}</p>
+                    <p><strong>Department:</strong> {{ manager.department.name }}</p> <!-- Assuming a related department model -->
+                    <p><strong>Phone Number:</strong> {{ manager.profile.phone_number }}</p> <!-- Displaying phone number -->
+                    <p><strong>Address:</strong> {{ manager.profile.address }}</p> <!-- Displaying address -->
+                    <p><strong>Date of Birth:</strong> {{ manager.profile.date_of_birth }}</p> <!-- Displaying date of birth -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'create_manager' %}" class="btn btn-secondary">Back to Create Manager</a>
+    </div>
+</div>
+{% endblock %}

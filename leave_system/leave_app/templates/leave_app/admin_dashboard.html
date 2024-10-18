@@ -1,0 +1,90 @@
+{% extends 'leave_app/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h5 class="sidebar-heading">Administration</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'admin_dashboard' %}">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'create_employee' %}">
+                                Create Employee
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'create_manager' %}">
+                                Create Manager
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'create_department' %}">
+                                Departments
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <h1 class="text-center">Admin Dashboard</h1>
+                <p class="text-center">Welcome, {{ user.username }}! This is your admin dashboard.</p>
+
+                <div class="mt-4">
+                    <h4>Quick Links:</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{% url 'create_employee' %}" class="btn btn-primary btn-block">Create New Employee</a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'create_manager' %}" class="btn btn-secondary btn-block">Create New Manager</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h4>Employees on Leave Today:</h4>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Department</th>
+                                <th>Leave Type</th>
+                                <th>Leave Duration</th>
+                                <th>Leave Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in employees_with_leaves %}
+                                {% for leave in entry.approved_leaves %}
+                                <tr>
+                                    <td>{{ entry.user.username }}</td>
+                                    <td>
+                                        {% if entry.user.department %}
+                                            {{ entry.user.department.name }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ leave.leave_type }}</td>
+                                    <td>{{ leave.start_date }} to {{ leave.end_date }} </td>
+                                    <td>Approved</td>
+                                </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom styles for the navbar */
+        .navbar-custom {
+            background-color: #007bff; /* Change this to your desired color */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom navbar-light">
+        <a class="navbar-brand text-white" href="{% if profile.user.is_employee %}{% url 'employee_dashboard' %}{% elif profile.user.is_manager %}{% url 'manager_dashboard' %}{% elif profile.user.is_superuser %}{% url 'admin_dashboard' %}{% endif %}">Leave Management System</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">  <!-- Align items to the right -->
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% if profile.user.is_employee %}{% url 'employee_dashboard' %}{% elif profile.user.is_manager %}{% url 'manager_dashboard' %}{% elif profile.user.is_superuser %}{% url 'admin_dashboard' %}{% endif %}">Home</a> <!-- Link to Profile -->
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'profile' %}">Profile</a> <!-- Link to Profile -->
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        {% block content %}
+        <!-- Content will be inserted here -->
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

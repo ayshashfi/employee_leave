@@ -1,0 +1,94 @@
+<!-- create_manager.html -->
+{% extends 'leave_app/base.html' %}
+
+{% block title %}Create Manager{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Create New Manager</h1>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} fade show" id="success-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <form method="POST" class="mt-4 border p-4 rounded shadow-sm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    <input type="text" name="username" id="{{ form.username.id_for_label }}" class="form-control" value="{{ form.username.value|default_if_none:'' }}">
+                    {{ form.username.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                    <input type="text" name="first_name" id="{{ form.first_name.id_for_label }}" class="form-control" value="{{ form.first_name.value|default_if_none:'' }}">
+                    {{ form.first_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                    <input type="text" name="last_name" id="{{ form.last_name.id_for_label }}" class="form-control" value="{{ form.last_name.value|default_if_none:'' }}">
+                    {{ form.last_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email</label>
+                    <input type="email" name="email" id="{{ form.email.id_for_label }}" class="form-control" value="{{ form.email.value|default_if_none:'' }}">
+                    {{ form.email.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    <input type="password" name="password" id="{{ form.password.id_for_label }}" class="form-control">
+                    {{ form.password.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.department.id_for_label }}">Select Department</label>
+                    <select name="department" id="{{ form.department.id_for_label }}" class="form-control">
+                        {% for department in form.department.field.queryset %}
+                            <option value="{{ department.id }}">{{ department.name }}</option>
+                        {% endfor %}
+                    </select>
+                    {{ form.department.errors }}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm">Create Manager</button>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <div class="mt-4">
+                <h4>Managers:</h4>
+                <ul class="list-group">
+                    {% for manager in managers %}
+                        <li class="list-group-item">
+                            <a href="{% url 'manager_profile' manager.id %}">{{ manager.username }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="mt-4">
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to hide the success message after 3 seconds
+    setTimeout(function() {
+        var successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            successMessage.style.display = 'none';  // Hide the message
+        }
+    }, 3000); // 3000 milliseconds = 3 seconds
+</script>
+
+{% endblock %}

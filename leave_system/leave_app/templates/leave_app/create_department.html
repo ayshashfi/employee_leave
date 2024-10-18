@@ -1,0 +1,51 @@
+<!-- create_department.html -->
+{% extends 'leave_app/base.html' %}
+
+{% block title %}Create Department{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Create New Department</h1>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} fade show" id="success-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" class="mt-4">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">Department Name</label>
+            {{ form.name }}
+            {{ form.name.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm">Create Department</button>
+    </form>
+
+    <h2 class="mt-5">Existing Departments</h2>
+    <ul class="list-group mt-3">
+        {% for department in departments %}
+            <li class="list-group-item">{{ department.name }}</li>
+        {% empty %}
+            <li class="list-group-item">No departments available.</li>
+        {% endfor %}
+    </ul>
+
+    <div class="mt-4">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+    // Function to hide the success message after 3 seconds
+    setTimeout(function() {
+        var successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            successMessage.style.display = 'none';  // Hide the message
+        }
+    }, 3000); // 3000 milliseconds = 3 seconds
+</script>
+
+{% endblock %}

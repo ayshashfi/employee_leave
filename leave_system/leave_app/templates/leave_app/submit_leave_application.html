@@ -1,0 +1,103 @@
+{% extends 'leave_app/base.html' %}
+
+{% block title %}Submit Leave Application{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Submit Leave Application</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} mt-3" id="message-{{ forloop.counter }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Display leave limit messages -->
+    {% if leave_limit_exceeded %}
+        <div class="alert alert-danger" id="error-message">
+            <strong>Error:</strong> The selected leave duration exceeds your remaining leaves.
+        </div>
+    {% elif selected_leave_days > remaining_leaves %}
+        <div class="alert alert-warning" id="warning-message">
+            <strong>Warning:</strong> You requested <strong>{{ selected_leave_days }}</strong> days, but you only have <strong>{{ remaining_leaves }}</strong> leaves left for this year.
+        </div>
+    {% endif %}
+
+    <form method="POST" class="mt-4" id="leave-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.leave_type.id_for_label }}">Leave Type</label>
+            {{ form.leave_type }}
+            {{ form.leave_type.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.start_date.id_for_label }}">Start Date</label>
+            {{ form.start_date }}
+            {{ form.start_date.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.end_date.id_for_label }}">End Date</label>
+            {{ form.end_date }}
+            {{ form.end_date.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.reason.id_for_label }}">Reason for Leave</label>
+            {{ form.reason }}
+            {{ form.reason.errors }}
+        </div>
+
+        <div class="text-danger" id="date-error" style="display: none;"></div> <!-- Error message area -->
+
+        <button type="submit" class="btn btn-primary" {% if leave_limit_exceeded %}disabled{% endif %}>Submit Application</button>
+        <a href="{% url 'employee_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+    // Hide success, error, or warning messages after 3 seconds
+    function hideMessage(id) {
+        const messageElement = document.getElementById(id);
+        if (messageElement) {
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
+    }
+
+    // Apply hideMessage function to all messages
+    document.querySelectorAll('[id^="message-"]').forEach((element) => hideMessage(element.id));
+    hideMessage('error-message');
+    hideMessage('warning-message');
+
+    // Validation for end date
+    document.getElementById('leave-form').addEventListener('submit', function(event) {
+        const startDateInput = document.querySelector('input[name="start_date"]');
+        const endDateInput = document.querySelector('input[name="end_date"]');
+        const dateError = document.getElementById('date-error');
+
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (endDate < startDate) {
+            // Prevent form submission
+            event.preventDefault();
+            // Show error message
+            dateError.textContent = 'Error: End date cannot be less than start date.';
+            dateError.style.display = 'block';
+            
+            // Hide error message after 3 seconds
+            setTimeout(() => {
+                dateError.style.display = 'none';
+            }, 3000);
+        } else {
+            // Clear error message if dates are valid
+            dateError.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

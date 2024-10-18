@@ -1,0 +1,50 @@
+{% extends 'leave_app/base.html' %}
+
+{% block title %}Employee Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Employee Dashboard</h1>
+    <p class="text-center">Welcome, {{ user.username }}! This is your employee dashboard.</p>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Menu</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="{% url 'submit_leave_application' %}" class="text-decoration-none">Apply for Leave</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'leave_request_list' %}" class="text-decoration-none">Leave History</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="alert alert-info">
+                <strong>Notice:</strong> Please ensure you submit your leave application at least 3 days in advance.
+            </div>
+
+            <!-- Display remaining leaves with appropriate messages -->
+            {% if remaining_leaves < 0 %}
+                <div class="alert alert-danger">
+                    You have <strong>0</strong> leaves remaining for this year. <br>
+                    <span>No leaves left for this year!</span>
+                </div>
+            {% elif remaining_leaves > 5 %}
+                <div class="alert alert-success">
+                    You have <strong>{{ remaining_leaves }}</strong> leaves remaining for this year.
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    Warning: You only have <strong>{{ remaining_leaves }}</strong> leaves remaining for this year!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'leave_app/base.html' %}
+
+{% block title %}Leave Requests - Manager{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Leave Requests</h1>
+
+    {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                {{ message }}<br>
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+
+    {% if leave_requests %}
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Leave Type</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in leave_requests %}
+                    <tr>
+                        <td>{{ request.employee.username }}</td>
+                        <td>{{ request.leave_type }}</td>
+                        <td>{{ request.start_date }}</td>
+                        <td>{{ request.end_date }}</td>
+                        <td>{{ request.reason }}</td>
+                        <td>{{ request.status }}</td>
+                        <td>
+                            {% if request.status == "Pending" %}
+                                <form action="{% url 'approve_leave_request' request.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+                                <form action="{% url 'reject_leave_request' request.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            {% elif request.status == "Approved" %}
+                                <form action="{% url 'reject_leave_request' request.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            {% elif request.status == "Rejected" %}
+                                <form action="{% url 'approve_leave_request' request.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-center">No leave requests to display.</p>
+    {% endif %}
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'manager_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+    // Automatically hide success messages after 3 seconds
+    setTimeout(function() {
+        const alert = document.querySelector('.alert');
+        if (alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+        }
+    }, 3000);
+</script>
+
+{% endblock %}

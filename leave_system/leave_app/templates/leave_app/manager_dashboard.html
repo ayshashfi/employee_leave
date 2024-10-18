@@ -1,0 +1,72 @@
+{% extends 'leave_app/base.html' %}
+
+{% block title %}Manager Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Menu</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="{% url 'manager_leave_request_list' %}">View Leave Requests</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h1 class="text-center">Manager Dashboard</h1>
+            <p class="text-center">Welcome, {{ user.username }}! This is your manager dashboard.</p>
+
+            <h3 class="mt-4">Leave Summary</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Total Leaves Taken</th>
+                        <th>Remaining Leaves</th>
+                        <th>Annual Leaves</th>
+                        <th>Sick Leaves</th>
+                        <th>Personal Leaves</th>
+                        <th>Maternity Leaves</th>
+                        <th>Paternity Leaves</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in leave_data %}
+                        <tr>
+                            <td>{{ data.employee.username }}</td>
+                            <td>{{ data.total_leaves_taken }}</td>
+                            <td>
+                                {% if data.remaining_leaves < 0 %}
+                                    0 <br>
+                                    <span class="text-danger">No leaves left for this year</span>
+                                {% else %}
+                                    {{ data.remaining_leaves }}
+                                {% endif %}
+                            </td>
+                            <td>{{ data.leave_summary.annual }}</td>
+                            <td>{{ data.leave_summary.sick }}</td>
+                            <td>{{ data.leave_summary.personal }}</td>
+                            <td>{{ data.leave_summary.maternity }}</td>
+                            <td>{{ data.leave_summary.paternity }}</td>
+                            
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">No employees found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
