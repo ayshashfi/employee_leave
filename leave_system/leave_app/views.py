@@ -65,10 +65,6 @@ def employee_dashboard(request):
 
 
 
-from django.db.models import Sum, F, ExpressionWrapper, DurationField, IntegerField
-from datetime import timedelta
-from datetime import timedelta
-
 @login_required
 def manager_dashboard(request):
     # Get the logged-in manager
@@ -118,6 +114,9 @@ def manager_dashboard(request):
         'user': request.user,
     }
     return render(request, 'leave_app/manager_dashboard.html', context)
+
+
+
 
 def admin_dashboard(request):
     # Get today's date
@@ -273,16 +272,14 @@ def create_manager(request):
 
 
 
+
 @login_required
 def manage_departments(request):
     departments = Department.objects.all()
     return render(request, 'leave_app/manage_departments.html', {'departments': departments})
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import LeaveRequest
-from .forms import LeaveRequestForm
+
+
 
 @login_required
 def submit_leave_request(request):
@@ -328,6 +325,8 @@ def submit_leave_request(request):
 
 
 
+
+
 @login_required
 def leave_request_list(request):
     # Get all leave requests for the logged-in employee
@@ -341,6 +340,8 @@ def leave_request_list(request):
     return render(request, 'leave_app/leave_request_list.html', {
         'leave_requests': leave_requests,
     })
+
+
 
 
 
